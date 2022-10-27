@@ -18,6 +18,8 @@ namespace Eticaret.API.Minimal.Controllers
         [HttpGet]
         public IActionResult GetProducts()
         {
+            var ss = "";
+
             return Ok();
         }
 
