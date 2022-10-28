@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ETicaret.Application.Abstractions;
 using ETicaret.Persistence.Concretes;
+using ETicaret.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicaret.Persistence
 {
@@ -14,6 +16,10 @@ namespace ETicaret.Persistence
         public static void AddPersistenceServices(this IServiceCollection services)
         {
             services.AddSingleton<IProductService, ProductService>();
+            services.AddDbContext<ETicaretApiDbContext>(options =>
+            {
+                options.UseNpgsql(Configuration.ConnectionString);
+            });
         }
     }
 }
