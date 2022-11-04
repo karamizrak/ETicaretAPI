@@ -11,7 +11,7 @@ export class ProductsComponent implements OnInit {
   constructor(private httpClientService: HttpClientService) {}
 
   ngOnInit(): void {
-    this.httpClientService
+    this.httpClientService 
       .get<Product[]>({
         controller: 'products',
       })
@@ -19,7 +19,7 @@ export class ProductsComponent implements OnInit {
         data[0].name;
         console.log(data);
       });
-
+//test
     // this.httpClientService
     //   .post(
     //     { controller: 'products' },
