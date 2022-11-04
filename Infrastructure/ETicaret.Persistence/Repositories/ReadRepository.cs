@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ETicaret.Persistence.Repositories
 {
-    public class ReadRepository<TEntity> :IReadRepository<TEntity> where TEntity : BaseEntity
+    public class ReadRepository<TEntity> : IReadRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly ETicaretApiDbContext _context;
 
@@ -21,16 +21,42 @@ namespace ETicaret.Persistence.Repositories
         }
 
         public DbSet<TEntity> Table => _context.Set<TEntity>();
-        public IQueryable<TEntity> GetAll() => Table;
-        
 
-        public IQueryable<TEntity> GetByWhere(Expression<Func<TEntity, bool>> where) => Table.Where(where);
+        public IQueryable<TEntity> GetAll(bool tracking = true)
+        {
+            var q = Table.AsQueryable();
+            if (!tracking)
+                q = q.AsNoTracking();
+            return q;
+        }
 
 
-        public async Task<TEntity> GetSingleAsync(Expression<Func<TEntity, bool>> where) => await Table.FirstOrDefaultAsync(where);
-        
+        public IQueryable<TEntity> GetByWhere(Expression<Func<TEntity, bool>> where, bool tracking = true)
+        {
+            var q = Table.Where(where);
+            if (!tracking)
+                q = q.AsNoTracking();
+            return q;
+        }
 
-        public async Task<TEntity> GetByIdAsync(Guid id)=>await Table.FirstOrDefaultAsync(x => x.Id == id);
-        
+
+        public async Task<TEntity> GetSingleAsync(Expression<Func<TEntity, bool>> where, bool tracking = true)
+        {
+            var q = Table.AsQueryable();
+            if (!tracking)
+                q = q.AsNoTracking();
+
+            return await q.FirstOrDefaultAsync(where);
+        }
+
+
+        public async Task<TEntity> GetByIdAsync(Guid id, bool tracking = true)
+        {
+            var q = Table.AsQueryable();
+            if (!tracking)
+                q = q.AsNoTracking();
+
+            return await q.FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

@@ -1,5 +1,6 @@
-﻿
+﻿using System.Net;
 using ETicaret.Application.Repositories.Product;
+using ETicaret.Application.ViewModel.Products;
 using ETicaret.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,54 @@ namespace Eticaret.API.Minimal.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(_productReadRepository.GetAll(false));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            return Ok(_productReadRepository.GetByIdAsync(Guid.Parse(id), false));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(VM_Create_Product model)
+        {
+            await _productWriteRepository.AddASync(new Product()
+            {
+                Name = model.Name,
+                Price = model.Price,
+                Stock = model.Stock
+            });
+            await _productWriteRepository.SaveAsync();
+            return StatusCode((int)HttpStatusCode.Created);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(VM_Update_Product model)
+        {
+            var product = await _productReadRepository.GetByIdAsync(model.Id);
+            product.Name = model.Name;
+            product.Price = model.Price;
+            product.Stock = model.Stock;
+            await _productWriteRepository.SaveAsync();
+
+            return Ok((int)HttpStatusCode.NoContent);
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Put(string id)
+        {
+            await _productWriteRepository.Remove(Guid.Parse(id));
+            await _productWriteRepository.SaveAsync();
+            return StatusCode((int)HttpStatusCode.OK);
+        }
+
+        [HttpGet("Calis")]
         public async Task<IActionResult> GetProducts()
         {
-            
             await _productWriteRepository.AddRangeASync(new()
             {
                 new() { Id = Guid.NewGuid(), CreatedDate = DateTime.UtcNow, Name = "Kalem1", Price = 12.1, Stock = 10 },
@@ -31,10 +77,8 @@ namespace Eticaret.API.Minimal.Controllers
                 new() { Id = Guid.NewGuid(), CreatedDate = DateTime.UtcNow, Name = "Kalem4", Price = 12.1, Stock = 13 },
                 new() { Id = Guid.NewGuid(), CreatedDate = DateTime.UtcNow, Name = "Kalem5", Price = 12.1, Stock = 14 }
             });
-           var ss= await _productWriteRepository.SaveAsync();
+            var ss = await _productWriteRepository.SaveAsync();
             return Ok();
         }
-
-        
     }
 }

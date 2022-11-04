@@ -8,11 +8,11 @@ using ETicaret.Domain.Entities.Common;
 
 namespace ETicaret.Application.Repositories
 {
-    public interface IReadRepository<TEntity>:IRepository<TEntity> where TEntity : BaseEntity
+    public interface IReadRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {
-        IQueryable<TEntity> GetAll();
-        IQueryable<TEntity> GetByWhere(Expression<Func<TEntity,bool>> where );
-        Task<TEntity> GetSingleAsync(Expression<Func<TEntity,bool>> where);
-        Task<TEntity> GetByIdAsync(Guid id);
+        IQueryable<TEntity> GetAll(bool tracking = true);
+        IQueryable<TEntity> GetByWhere(Expression<Func<TEntity, bool>> where, bool tracking = true);
+        Task<TEntity> GetSingleAsync(Expression<Func<TEntity, bool>> where, bool tracking = true);
+        Task<TEntity> GetByIdAsync(Guid id, bool tracking = true);
     }
 }
