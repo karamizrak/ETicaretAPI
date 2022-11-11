@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Product } from 'src/app/contracts/product';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
+import { Create_Product } from 'src/app/contracts/create_product';
 import { HttpClientService } from 'src/app/services/common/http-client.service';
 
 @Component({
@@ -7,18 +9,20 @@ import { HttpClientService } from 'src/app/services/common/http-client.service';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
 })
-export class ProductsComponent implements OnInit {
-  constructor(private httpClientService: HttpClientService) {}
+export class ProductsComponent extends BaseComponent implements OnInit {
+  constructor(private httpClientService: HttpClientService,spinner :NgxSpinnerService) {super(spinner)}
 
   ngOnInit(): void {
-    this.httpClientService 
-      .get<Product[]>({
-        controller: 'products',
-      })
-      .subscribe((data) => {
-        data[0].name;
-        console.log(data);
-      });
+
+    this.showSpinner(SpinnerType.BallAtom);
+    // this.httpClientService
+    //   .get<Create_Product[]>({
+    //     controller: 'products',
+    //   })
+    //   .subscribe((data) => {
+    //     data[0].name;
+    //     console.log(data);
+    //   });
 //test
     // this.httpClientService
     //   .post(
